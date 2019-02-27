@@ -77,6 +77,13 @@ public class Main {
                     err += "Error in your sql syntax. Missing \'=\'";
                     status = true;
                 }
+          
+            }
+//            check semicolon
+            tmp = words[words.length - 1];
+            if (!tmp.matches(".*;$") && !status) {
+                err += "Error in your sql syntax. Missing \';\'";
+                status = true;
             }
         }
     
