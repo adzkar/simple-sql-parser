@@ -1,0 +1,17 @@
+{
+    "tables":
+        [
+            {
+                "name": "post",
+                "attr": ["id_post","title","content","release_date"]
+            },
+            {
+                "name": "tag",
+                "attr": ["id_tag","tag_title"]
+            },
+            {
+                "name": "tag_post",
+                "attr": ["id_tag_post","id_post","id_tag"]
+            }
+        ]
+}
