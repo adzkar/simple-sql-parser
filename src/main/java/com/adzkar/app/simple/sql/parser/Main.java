@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -70,7 +71,7 @@ public class Main {
         String[] words;
         Boolean status = false;
         String err = " ";
-        String s = "select id_post,title from post join tag on id=id;";
+        String s = "select id_post,title from post join tag_post on post.id_post=tag_post.id_post;";
         String q = s;
         s = s.toLowerCase();
 //        check select
@@ -159,13 +160,39 @@ public class Main {
                     err += "Missing '=' on your sql";
                     status = true;
                 }
-                
+                s = tmps[2];
+                words = s.split("=");
+                tmps = words[0].split("\\.");
+                String x = tmps[1];
+                int nId = StringUtils.countMatches(s, x);
+                if (nId != 2) {
+                    err += "Missing ID:Not Found\n";
+                    status = true;
+                }
+                for (String w : words) {
+                    tmps = w.split("\\.");
+                    if (!tables.contains(tmps[0]) && !status) {
+                        err += "Table Not Found";
+                        status = true;
+                    }
+                    else {
+                        int i = 0;
+                        while (i < tmps.length && !tables.get(i).equals(tmps[0])) {
+                            i++;
+                        }
+                        if (!tables.get(i).contains(x)) {
+                            err = "Missing ID:Not Found\n";
+                            status = true;
+                        }
+        
+                    }
+                }
             }
             
 //          check semicolon
             tmp = words[words.length - 1];
             if (!tmp.matches(".*;$") && !status) {
-                err += "Error in your sql syntax. Missing \';\'";
+                err = "Error in your sql syntax. Missing \';\'";
                 status = true;
             }
         }
