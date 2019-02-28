@@ -10,6 +10,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -29,6 +30,7 @@ public class Main {
         String tmp = " ";
         String output = " ";
         String columns = " ";
+        Scanner sc = new Scanner(System.in);
 //        read json
         JSONParser parser = new JSONParser();
         
@@ -68,7 +70,9 @@ public class Main {
         String[] words;
         Boolean status = false;
         String err = " ";
-        String s = "select id_post,title from post join tag_post on tag_post.id_post=tag_post.id_post;";
+        System.out.print("$ ");
+        String s = sc.nextLine();
+//        String s = "select * from post;";
         String q = s;
         s = s.toLowerCase();
 //        check select
@@ -102,12 +106,6 @@ public class Main {
             err += "Table Not Found";
             status = true;
         }
-        String abc = words[0];
-        if (abc.substring(abc.length()-1).equals(";") && tables.contains(tmp)) {
-            System.out.println("Table: "+tmp);
-            int i = tables.indexOf(tmp);
-            System.out.println(attr.get(i));
-        }
 //        check column
         boolean found = false;
         int n = 0;
@@ -125,10 +123,6 @@ public class Main {
                found = true; 
             }
         }
-        if (!(s.matches("\\*.*")) && !status && !found) {
-            err += "Column not found \n";
-            status = true;
-        }
 //      check last words
         words = s.split(" ",2);
         if (words.length == 1) {
@@ -136,7 +130,25 @@ public class Main {
                 err += "Missing ; in your SQL";
                 status = true;
             }
+//            check column
+            System.out.println();
+            if (!columns.equals(" ")) {
+                tmps = columns.split(",");
+                s = s.replace(";", "");
+                for (int i = 0; i < tmps.length; i++) {
+                    if (!attr.get(tables.indexOf(s)).contains(tmps[i])) {
+                        err += "Column not found";
+                        status = true;
+                    }
+                }
+            }
 //          output here without relation
+            String abc = words[0];
+            if (abc.substring(abc.length()-1).equals(";") && tables.contains(tmp)) {
+                System.out.println("Table: "+tmp);
+                int i = tables.indexOf(tmp);
+                System.out.println(attr.get(i));
+            }
             System.out.println("");
         } else {
             s = words[1];
@@ -204,7 +216,6 @@ public class Main {
                 }
             }
         }
-    
         System.out.println(err);
     }
 }
