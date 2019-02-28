@@ -71,7 +71,7 @@ public class Main {
         String[] words;
         Boolean status = false;
         String err = " ";
-        String s = "select id_post,title from post join tag_post on post.id_post=tag_post.id_post;";
+        String s = "select id_post,title from post join tag_post on tag_post.id_post=post.id_post;";
         String q = s;
         s = s.toLowerCase();
 //        check select
@@ -104,6 +104,12 @@ public class Main {
         if (!tables.contains(tmp) && !status) {
             err += "Table Not Found";
             status = true;
+        }
+        String abc = words[0];
+        if (abc.substring(abc.length()-1).equals(";") && tables.contains(tmp)) {
+            System.out.println("Table: "+tmp);
+            int i = tables.indexOf(tmp);
+            System.out.println(attr.get(i));
         }
 //        check column
         boolean found = false;
@@ -194,6 +200,15 @@ public class Main {
             if (!tmp.matches(".*;$") && !status) {
                 err = "Error in your sql syntax. Missing \';\'";
                 status = true;
+            }
+            if (!status) {
+                String[] c;
+                tmps = s.split("=");
+                for(String x : tmps) {
+                    c = x.split("\\.");
+                    System.out.println("Table: "+c[0]);
+                    System.out.println("Attr: "+attr.get(tables.indexOf(c[0])));
+                }
             }
         }
     
