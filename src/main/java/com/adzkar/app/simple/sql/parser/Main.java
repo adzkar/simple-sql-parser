@@ -9,10 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -71,7 +68,7 @@ public class Main {
         String[] words;
         Boolean status = false;
         String err = " ";
-        String s = "select id_post,title from post join tag_post on tag_post.id_post=post.id_post;";
+        String s = "select id_post,title from post join tag_post on tag_post.id_post=tag_post.id_post;";
         String q = s;
         s = s.toLowerCase();
 //        check select
@@ -182,15 +179,11 @@ public class Main {
                         status = true;
                     }
                     else {
-                        int i = 0;
-                        while (i < tmps.length && !tables.get(i).equals(tmps[0])) {
-                            i++;
-                        }
-                        if (!tables.get(i).contains(x) && status) {
-                            err = "Missing ID:Not Found\n";
+                        if (!attr.get(tables.indexOf(tmps[0])).contains(x)) {
+                            err = "Missing ID: Not Found";
                             status = true;
+                            break;
                         }
-        
                     }
                 }
             }
