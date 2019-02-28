@@ -29,6 +29,7 @@ public class Main {
         List<List<String>> attr = new ArrayList<>();
         String[] tmps;
         String tmp = " ";
+        String output = " ";
         String columns = " ";
 //        read json
         JSONParser parser = new JSONParser();
@@ -69,7 +70,7 @@ public class Main {
         String[] words;
         Boolean status = false;
         String err = " ";
-        String s = "select id_post,title from post;";
+        String s = "select id_post,title from post join tag on id=id;";
         String q = s;
         s = s.toLowerCase();
 //        check select
@@ -84,7 +85,6 @@ public class Main {
             tmps = s.split(" ",2);
             columns = tmps[0];
         }
-        System.out.println(columns);
         words = s.split(" ", 2);
         s = words[1];
 //        check from
@@ -121,7 +121,6 @@ public class Main {
                found = true; 
             }
         }
-        System.out.println(n);
         if (!(s.matches("\\*.*")) && !status && !found) {
             err += "Column not found \n";
             status = true;
@@ -137,35 +136,33 @@ public class Main {
             System.out.println("");
         } else {
             s = words[1];
-            if (!s.matches("inner|full|left|right.*") && !status) {
-                err += "Error Join Type";
-                status = true;
-            }
-            words = s.split(" ",2);
-            s = words[1];
-            if(!s.matches("^join.*") && !status) {
-                err += "Error in your sql syntax. Missing \'join\'";
-                status = true;
-            }
-            words = s.split(" ",2);
-            s = words[1];
-//            on
-            words = s.split("(?=on)");
-            for(String w : words) {
-                if(!w.matches("^on.*") && !status) {
-                    err += "Error in your sql syntax. Missing \'on\'";
+            words = s.split("(?=join)");
+            for (String word : words) {
+                if(!s.matches("^join.*") && !status) {
+                    err += "Error in your sql syntax. Missing \'join\'";
                     status = true;
                 }
-                tmps = w.split(" ",4);
-                tmp = tmps[1];
-//                check equation
-                if (!tmp.matches(".*=.*") && !status) {
-                    err += "Error in your sql syntax. Missing \'=\'";
+//              check table
+                words = s.split(" ",2);
+                s = words[1];
+                tmps = s.split(" ");
+                tmp = tmps[0];
+                if (!tables.contains(tmp) && !status) {
+                    err += "Table Not Found";
                     status = true;
                 }
-          
+                if (!s.matches(".*on.*")) {
+                    err += "Missing 'on' on your sql";
+                    status = true;
+                }
+                if(!s.matches(".*=.*")) {
+                    err += "Missing '=' on your sql";
+                    status = true;
+                }
+                
             }
-//            check semicolon
+            
+//          check semicolon
             tmp = words[words.length - 1];
             if (!tmp.matches(".*;$") && !status) {
                 err += "Error in your sql syntax. Missing \';\'";
