@@ -180,7 +180,7 @@ public class Main {
                         while (i < tmps.length && !tables.get(i).equals(tmps[0])) {
                             i++;
                         }
-                        if (!tables.get(i).contains(x)) {
+                        if (!tables.get(i).contains(x) && status) {
                             err = "Missing ID:Not Found\n";
                             status = true;
                         }
